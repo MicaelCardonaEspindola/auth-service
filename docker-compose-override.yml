@@ -1,0 +1,18 @@
+version: '3.6'
+services:
+  postgres:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: api_user
+      POSTGRES_PASSWORD: development_pass
+      POSTGRES_DB: auth-api
+    volumes:
+      - ./docker-utils:/docker-entrypoint-initdb.d
+      - auth_api_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+
+volumes:
+  auth_api_data:
