@@ -17,11 +17,13 @@ import { LoggerModule } from '../logger/logger.module';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         const options: JwtModuleOptions = {
-          secret: configService.get().auth.jwtSecret,
+        secret: configService.get().auth.jwtSecret || process.env.JWT_SECRET || process.env.SECRET_KEY,
         };
         if (configService.get().auth.expireIn) {
           options.signOptions = {
-            expiresIn: configService.get().auth.expireIn,
+            algorithm: 'HS256',
+            expiresIn: configService.get().auth.expireIn 
+
           };
         }
         return options;
