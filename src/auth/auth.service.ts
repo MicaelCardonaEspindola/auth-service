@@ -35,7 +35,13 @@ export class AuthService {
 
     // This will be used for the initial login
     let userToAttempt: UserEntity | null | undefined;
-    if (loginAttempt.email) {
+    
+    // Try to find user by username first, then by email
+    if (loginAttempt.username) {
+      userToAttempt = await this.usersService.findOneByUsername(
+        loginAttempt.username,
+      );
+    } else if (loginAttempt.email) {
       userToAttempt = await this.usersService.findOneByEmail(
         loginAttempt.email,
       );

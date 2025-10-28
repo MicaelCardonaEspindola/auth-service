@@ -14,7 +14,7 @@ export class AuthResolver {
   async login(@Args('user') user: LoginUserInput): Promise<LoginResult> {
     try {
       const result = await this.authService.validateUserByPassword(user);
-
+      console.log(result);
       if (result) return result;
       throw new AuthenticationError(
         'Could not log-in with the provided credentials',
