@@ -1,3 +1,4 @@
+# Etapa de build
 FROM node:20-alpine AS builder
 
 WORKDIR /app
@@ -11,10 +12,13 @@ RUN npm ci
 # Copiar código fuente
 COPY . .
 
+# Copiar archivos GraphQL explícitamente (si no están dentro de src)
+COPY src/**/*.graphql ./src/
+
 # Compilar TypeScript
 RUN npm run build
 
-# Etapa de producción
+# Etapa final (producción)
 FROM node:20-alpine
 
 WORKDIR /app
@@ -28,16 +32,13 @@ RUN npm ci --only=production
 # Copiar código compilado desde builder
 COPY --from=builder /app/dist ./dist
 
-# Copiar archivos GraphQL
-COPY --from=builder /app/src/auth/auth.types.graphql ./src/auth/
-COPY --from=builder /app/src/users/users.types.graphql ./src/users/
+# Copiar archivos GraphQL también al contenedor final
+COPY --from=builder /app/src/**/*.graphql ./dist/src/
 
 # Exponer puerto
 EXPOSE 5000
 
-# Variables de entorno por defecto
 ENV NODE_ENV=production
 
 # Comando de inicio
 CMD ["node", "dist/main"]
-

@@ -28,9 +28,7 @@ export class DbModule {
     return {
       type: 'postgres',
       url: dbdata.url,
-      ssl: (process.env.NODE_ENV !== 'local' && process.env.NODE_ENV !== 'test')
-        ? { rejectUnauthorized: false }
-        : false,
+      ssl: false,
     };
   }
 
