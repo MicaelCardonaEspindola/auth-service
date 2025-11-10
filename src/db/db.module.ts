@@ -24,13 +24,19 @@ export class DbModule {
     };
   }
 
-  private static getConnectionOptionsPostgres(dbdata: ConfigDBData): TypeOrmModuleOptions {
-    return {
-      type: 'postgres',
-      url: dbdata.url,
-      ssl: { rejectUnauthorized: false },
-    };
-  }
+private static getConnectionOptionsPostgres(dbdata: ConfigDBData): TypeOrmModuleOptions {
+  return {
+    type: 'postgres',
+    url: dbdata.url,
+    ssl: true, // habilita SSL en la conexión
+    extra: {
+      ssl: {
+        rejectUnauthorized: false, // ignora el certificado autofirmado
+      },
+    },
+  };
+}
+
 
   public static forRoot(dbconfig: DbConfig): DynamicModule {
     return {
