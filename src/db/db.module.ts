@@ -19,7 +19,7 @@ export class DbModule {
     return {
       ...connectionOptions,
       entities: dbconfig.entities,
-      synchronize: true,
+      synchronize: false,
       logging: false,
     };
   }
@@ -28,7 +28,7 @@ export class DbModule {
     return {
       type: 'postgres',
       url: dbdata.url,
-      ssl: false,
+      ssl: { rejectUnauthorized: false },
     };
   }
 
