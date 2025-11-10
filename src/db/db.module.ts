@@ -8,13 +8,12 @@ import { Logger } from '../logger/logger';
 import { LoggerModule } from '../logger/logger.module';
 import { DbConfigError } from './db.errors';
 import { DbConfig } from './db.interface';
-
 @Module({})
 export class DbModule {
   private static getConnectionOptions(config: ConfigService, dbconfig: DbConfig): TypeOrmModuleOptions {
     const dbdata = config.get().db;
     if (!dbdata) {
-      throw new DbConfigError('Database config is missing');
+      throw new DbConfigError('Database config is mSissing');
     }
     const connectionOptions = DbModule.getConnectionOptionsPostgres(dbdata);
     return {
@@ -26,17 +25,12 @@ export class DbModule {
   }
 
   private static getConnectionOptionsPostgres(dbdata: ConfigDBData): TypeOrmModuleOptions {
-    const isProduction = process.env.NODE_ENV === 'production';
-    
     return {
       type: 'postgres',
       url: dbdata.url,
-      // Usar un objeto SSL en lugar de booleano
-      ssl: isProduction ? { rejectUnauthorized: false } : false,
-      // Extra NO es necesario cuando ssl ya está configurado arriba
-      extra: isProduction ? {
-        // Configuraciones adicionales si son necesarias
-      } : {},
+      ssl: (process.env.NODE_ENV !== 'local' && process.env.NODE_ENV !== 'test')
+        ? { rejectUnauthorized: false }
+        : false,
     };
   }
 
@@ -46,9 +40,9 @@ export class DbModule {
       imports: [
         TypeOrmModule.forRootAsync({
           imports: [ConfigModule, LoggerModule],
-          useFactory: (configService: ConfigService, logger: Logger) => 
-            DbModule.getConnectionOptions(configService, dbconfig),
-          inject: [ConfigService, Logger],
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          useFactory: (configService: ConfigService, logger: Logger) => DbModule.getConnectionOptions(configService, dbconfig),
+          inject: [ConfigService],
         }),
       ],
       controllers: [],
