@@ -39,6 +39,6 @@ COPY --from=builder /app/src/**/*.graphql ./dist/src/
 EXPOSE 5000
 
 ENV NODE_ENV=production
-
+ENV PORT=5000
 # Comando de inicio
-CMD ["node", "dist/main"]
+CMD ["node", "dist/main.js"]
