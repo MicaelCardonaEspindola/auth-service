@@ -19,7 +19,7 @@ export class DbModule {
     return {
       ...connectionOptions,
       entities: dbconfig.entities,
-      synchronize: false,
+      synchronize: true,
       logging: false,
     };
   }
